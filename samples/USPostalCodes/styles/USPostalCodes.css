@@ -1,0 +1,10 @@
+.statusLine {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    color: white;
+    background-color: black;
+    font: bold 18pt sans-serif;
+    padding: 10px;
+}
