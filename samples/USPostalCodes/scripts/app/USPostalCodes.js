@@ -1,23 +1,23 @@
 /* global statusHelper, logHelper, IndexedDB, cities, Event */
 
-var DATABASE = {NAME: 'postalCodes', VERSION: 64};
+var DATABASE  = {NAME: 'postalCodes', VERSION: 64};
 var LOCATIONS = {STORENAME: 'locations', VERSION: 5};
 
 function withPostalCodeDatabase(onSuccess) {
     'use strict';
     IndexedDB.withDatabase({
         database: {
-            name: DATABASE.NAME,
+            name   : DATABASE.NAME,
             version: DATABASE.VERSION
         },
-        events: {
-            upgradeneeded: IndexedDB.defaultDatabaseUpgrade({
+        events  : {
+            upgradeneeded : IndexedDB.defaultDatabaseUpgrade({
                 META_VERSION_CONTROL: {
                     keyDefinition: {keyPath: 'storeName', autoIncrement: true}
                 },
-                locations: {
+                locations           : {
                     keyDefinition: {keyPath: 'zipcode', autoIncrement: true},
-                    indexes: [
+                    indexes      : [
                         {propertyName: 'city', indexName: 'cities', options: {unique: false}}
                     ],
                     forceRecreate: true
@@ -26,10 +26,10 @@ function withPostalCodeDatabase(onSuccess) {
             upgradeSuccess: IndexedDB.initializeDatabase({
                 locations: {
                     latestVersion: LOCATIONS.VERSION,
-                    initialize: insertZipcodes
+                    initialize   : insertZipcodes
                 }
             }),
-            success: function(event) {
+            success       : function (event) {
                 var database = event.target.result;
                 onSuccess(database, event);
             },
@@ -53,9 +53,9 @@ function insertZipcodes(zipcodeStore) {
 
     function handleDataChunk(event) {
         var responseText = event.target.responseText;
-        var lastNewLine = responseText.lastIndexOf('\n');
+        var lastNewLine  = responseText.lastIndexOf('\n');
         if (lastNewLine > lastCharacter) {
-            var chunk = responseText.substring(lastCharacter, lastNewLine);
+            var chunk     = responseText.substring(lastCharacter, lastNewLine);
             lastCharacter = lastNewLine + 1;
 
             var lines = chunk.split('\n');
@@ -65,19 +65,19 @@ function insertZipcodes(zipcodeStore) {
         }
 
         if (event.type === 'load') {
-            cities.lookup('02134', function() {
+            cities.lookup('02134', function () {
                 document.body.removeChild(statusLine);
             });
         }
 
         function storeZipcodes(lines) {
-            lines.toArray().forEach(function(line) {
+            lines.toArray().forEach(function (line) {
                 var fields = line.split(',');
                 zipcodeStore.put({
-                    zipcode: fields[0],
-                    city: fields[1],
-                    state: fields[2],
-                    latitude: fields[3],
+                    zipcode  : fields[0],
+                    city     : fields[1],
+                    state    : fields[2],
+                    latitude : fields[3],
                     longitude: fields[4]
                 });
             });
