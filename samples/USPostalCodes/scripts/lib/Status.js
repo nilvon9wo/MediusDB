@@ -1,7 +1,7 @@
 statusHelper = {
     createStatus: function (message) {
         'use strict';
-        var statusLine = document.createElement('div');
+        var statusLine       = document.createElement('div');
         statusLine.className = 'statusLine';
         document.body.appendChild(statusLine);
         display(message);

@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Zipcode Database</title>
-    <link rel="shortcut icon" href="" />
-    <link rel="stylesheet" href="styles/USPostalCodes.css"/>
-</head>
-<body>
-<div>
-    <p>Enter a zip code to find its city: </p>
-    <label for="zipcode_input">Zipcode: <input id="zipcode_input" onchange="cities.display(this.value)"/></label>
-    City: <output id="city"></output>
-</div>
-<div>
-    <p>Enter a city name (case sensitive, without state) to find cities and their zipcodes:</p>
-    <label for="city_input">City: <input id="city_input" onchange="zipcodes.display(this.value)"/></label>
-    <div id="zipcodes"></div>
-</div>
+	<head>
+		<meta charset="UTF-8">
+		<title>Zipcode Database</title>
+		<link rel="shortcut icon" href=""/>
+		<link rel="stylesheet" href="styles/USPostalCodes.css"/>
+	</head>
+	<body>
+		<div>
+			<p>Enter a zip code to find its city: </p>
+			<label for="zipcode_input">Zipcode: <input id="zipcode_input" onchange="cities.display(this.value)"/></label>
+			City:
+			<output id="city"></output>
+		</div>
+		<div>
+			<p>Enter a city name (case sensitive, without state) to find cities and their zipcodes:</p>
+			<label for="city_input">City: <input id="city_input" onchange="zipcodes.display(this.value)"/></label>
+			<div id="zipcodes"></div>
+		</div>
 
-<p><i>Your first query may take a very long time to complete.</i></p>
-<p><i>You may need to start Chrome with --unlimited-quota-for-indexeddb</i></p>
-<button onclick="deleteDatabase()">Delete Database</button>
-<script src="scripts/JavaScriptObjectExtensions/Object.js"></script>
-<script src="scripts/JavaScriptObjectExtensions/Log.js" type="text/javascript"></script>
-<script src="scripts/JavaScriptObjectExtensions/Event.js" type="text/javascript"></script>
-<script src="scripts/JavaScriptObjectExtensions/IndexedDB.js" type="text/javascript"></script>
-<script src="scripts/helpers/statusHelper.js" type="text/javascript"></script>
-<script src="scripts/USPostalCodes/Location.js" type="text/javascript"></script>
-<script src="scripts/USPostalCodes/cities.js"></script>
-<script src="scripts/USPostalCodes/zipcodes.js"></script>
-<script src="scripts/USPostalCodes/USPostalCodes.js"></script>
-</body>
+		<p><i>Your first query may take a very long time to complete.</i></p>
+		<p><i>You may need to start Chrome with --unlimited-quota-for-indexeddb</i></p>
+
+		<button onclick="deleteDatabase()">Delete Database</button>
+
+		<script src="scripts/lib/Object.js"></script>
+		<script src="scripts/lib/Log.js"></script>
+		<script src="scripts/lib/Event.js"></script>
+		<script src="scripts/lib/IndexedDB.js"></script>
+		<script src="scripts/lib/Status.js"></script>
+		<script src="scripts/app/Location.js"></script>
+		<script src="scripts/app/cities.js"></script>
+		<script src="scripts/app/zipcodes.js"></script>
+		<script src="scripts/app/USPostalCodes.js"></script>
+	</body>
 </html>

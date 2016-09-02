@@ -13,9 +13,9 @@ var cities = {
         withPostalCodeDatabase(function (database) {
             IndexedDB.readRecordByKey({
                 database: database,
-                store: LOCATIONS.STORENAME,
-                key: zipcode,
-                events: {
+                store   : LOCATIONS.STORENAME,
+                key     : zipcode,
+                events  : {
                     success: function (event) {
                         var resultCity = event.target.result;
                         if (resultCity) {
