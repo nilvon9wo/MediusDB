@@ -1,6 +1,6 @@
 /* global IndexedDB, indexedDB, Event, Log, IDBKeyRange */
 
-var IndexedDB = (function () {
+var MediusDB = (function () {
     var VERSION_CONTROL = 'META_VERSION_CONTROL';
 
     // Windows ---------------------------------------------------------------------------
@@ -47,7 +47,7 @@ var IndexedDB = (function () {
         };
 
         function upgradeStore(transaction, database, storeName) {
-            IndexedDB.createStore({
+            MediusDB.createStore({
                 database     : database,
                 store        : storeName,
                 keyDefinition: stores[storeName].keyDefinition,

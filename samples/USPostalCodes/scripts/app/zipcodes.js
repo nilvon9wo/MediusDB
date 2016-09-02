@@ -16,7 +16,7 @@ var zipcodes = {
     lookup: function (city, callback) {
         'use strict';
         withPostalCodeDatabase(function (database) {
-            IndexedDB.withCursor({
+            MediusDB.withCursor({
                 database      : database,
                 store         : LOCATIONS.STORENAME,
                 range         : {only: city},

@@ -11,7 +11,7 @@ var cities = {
     lookup: function (zipcode, callback) {
         'use strict';
         withPostalCodeDatabase(function (database) {
-            IndexedDB.readRecordByKey({
+            MediusDB.readRecordByKey({
                 database: database,
                 store   : LOCATIONS.STORENAME,
                 key     : zipcode,

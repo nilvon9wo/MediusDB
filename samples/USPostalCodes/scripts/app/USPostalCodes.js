@@ -5,13 +5,13 @@ var LOCATIONS = {STORENAME: 'locations', VERSION: 5};
 
 function withPostalCodeDatabase(onSuccess) {
     'use strict';
-    IndexedDB.withDatabase({
+    MediusDB.withDatabase({
         database: {
             name   : DATABASE.NAME,
             version: DATABASE.VERSION
         },
         events  : {
-            upgradeneeded : IndexedDB.defaultDatabaseUpgrade({
+            upgradeneeded : MediusDB.defaultDatabaseUpgrade({
                 META_VERSION_CONTROL: {
                     keyDefinition: {keyPath: 'storeName', autoIncrement: true}
                 },
@@ -23,7 +23,7 @@ function withPostalCodeDatabase(onSuccess) {
                     forceRecreate: true
                 }
             }),
-            upgradeSuccess: IndexedDB.initializeDatabase({
+            upgradeSuccess: MediusDB.initializeDatabase({
                 locations: {
                     latestVersion: LOCATIONS.VERSION,
                     initialize   : insertZipcodes
@@ -87,5 +87,5 @@ function insertZipcodes(zipcodeStore) {
 
 function deleteDatabase() {
     'use strict';
-    IndexedDB.deleteDatabase(DATABASE.NAME);
+    MediusDB.deleteDatabase(DATABASE.NAME);
 }
