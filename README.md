@@ -27,33 +27,33 @@ it took two weeks (admittedly, with interruptions) to create an unstable solutio
  Also, I hope to receive feedback towards MediusDB's improvement, both for the sake of improving it
  and for the sake of learning.
 
- ## Dependencies
+## Dependencies
  
  MediusDB presently depends upon:
   
+  1. A zipcode.csv file:  Boutell.com offers a suitable file at https://boutell.com/zipcodes/
   1. Four additional scripts.
-  
-  * Object.js
-  * Event.js
-  * Log.js
-  * Status.js
+  ** Object.js
+  ** Event.js
+  ** Log.js
+  ** Status.js
   
   I've chosen to keep separate  as I want to keep MediusDB.js focused on indexedDB. 
   You'll find these scripts within the "US Postal Codes" sample project /scripts/lib folder.
   
   (After MediusDB is debugged, I may later rethink this so MediusDB can stand alone.)
   
-  2. A zipcode.csv file.  
+ 
+## Samples
+ 
+In the sample directory, you'll find:
+ 
+ 1. "US Postal Codes"
+ 
+ (Others may be added later.)
+ 
   
-  Boutell.com offers a suitable file at https://boutell.com/zipcodes/
- 
- ## Samples
- 
- 1. In the sample directory, you'll find a heavily refactored "US Postal Codes" application 
- which demonstrates the use of Medius DB.
- 
-  
- ## Contributions are welcome.
+## Contributions are welcome.
  
  Please feel free to file issues, create your own branches, and open pull requests.
  
