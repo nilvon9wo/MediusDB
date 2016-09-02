@@ -1,7 +1,8 @@
-/* global Log */
+/* global MediusLog */
 
-var Event = Event || {};
-Event.add = Event.add || function (target, type, handler) {
+var MediusEvent = {
+    add: function (target, type, handler) {
+        'use strict';
         if (typeof target === 'string') {
             target = document.querySelector(target);
         }
@@ -15,10 +16,7 @@ Event.add = Event.add || function (target, type, handler) {
         }
 
         if (type !== 'error') {
-            Event.add(target, 'error', Log.error);
+            MediusEvent.add(target, 'error', MediusLog.error);
         }
-    };
-
-Event.addClick = Event.addClick || function (element, onClick) {
-        this.add(element, 'click', onClick);
-    };
+    }
+};

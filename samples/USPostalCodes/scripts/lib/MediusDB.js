@@ -264,7 +264,7 @@ var MediusDB = (function () {
         var requestCursor = source.openCursor(range);
 
         var atLeastOnce = false;
-        Event.add(requestCursor, 'success', function (event) {
+        MediusEvent.add(requestCursor, 'success', function (event) {
             var cursor = event.target.result;
             if (cursor) {
                 config.cursorCallback(cursor);
@@ -296,7 +296,7 @@ var MediusDB = (function () {
                 if (eventName === 'upgradeSuccess') {
                     eventName = 'success';
                 }
-                Event.add(target, eventName, config[eventSetName][key]);
+                MediusEvent.add(target, eventName, config[eventSetName][key]);
             }
         }
     }
