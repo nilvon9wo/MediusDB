@@ -9,3 +9,4 @@ out
 gen
 .idea/
 MediusDB.iml
+/samples/USPostalCodes/scripts/data/zipcode.csv
