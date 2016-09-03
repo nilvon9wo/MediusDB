@@ -10,14 +10,20 @@ function insertZipcodes(database) {
     var numberOfLines = 0;
 
     function handleDataChunk(event) {
-        var config = {
-            database: database,
-            store: 'locations',
-            isWritable: true,
-            storeCallback: function (store, transaction) {
-                function storeZipcodes(lines) {
+        var responseText = event.target.responseText;
+        var lastNewLine = responseText.lastIndexOf('\n');
+
+        if (lastNewLine > lastCharacter) {
+            var chunk = responseText.substring(lastCharacter, lastNewLine);
+            lastCharacter = lastNewLine + 1;
+            var lines = chunk.split('\n');
+
+            MediusDB.withStore({
+                database: database,
+                store: LOCATIONS.STORENAME,
+                isWritable: true,
+                storeCallback: function (store, transaction) {
                     lines.toArray().forEach(function (line) {
-                        statusLine.display('Putting: ' + line);
                         var fields = line.split(',');
                         store.put({
                             zipcode: fields[0],
@@ -28,29 +34,15 @@ function insertZipcodes(database) {
                         });
                     });
                 }
+            });
+            
+            numberOfLines += lines.length;
+            statusLine.display('Initializing zipcode database: loaded ' + numberOfLines + ' records.');
+        }
 
-                var responseText = event.target.responseText;
-                var lastNewLine = responseText.lastIndexOf('\n');
-                if (lastNewLine > lastCharacter) {
-                    var chunk = responseText.substring(lastCharacter, lastNewLine);
-                    lastCharacter = lastNewLine + 1;
-
-                    var lines = chunk.split('\n');
-                    numberOfLines += lines.length;
-                    storeZipcodes(lines);
-                    statusLine.display('Initializing zipcode database: loaded ' + numberOfLines + ' records.');
-                }
-
-                if (event.type === 'load') {
-                    var zip = document.getElementById('zipcode_input').value;
-                    cities.lookup(zip, function () {
-                        statusLine.remove();
-                        location.reload();
-                    });
-                }
-            }
-        };
-        MediusDB.withStore(config);
+        if (event.type === 'load') {
+            location.reload();
+        }
     }
 
     MediusHttp.get({
