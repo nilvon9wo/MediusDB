@@ -1,4 +1,4 @@
-/* global IndexedDB, indexedDB, Event, Log, IDBKeyRange */
+/* global IndexedDB, indexedDB, Event, Log, IDBKeyRange, MediusEvent */
 
 var MediusDB = (function () {
     var VERSION_CONTROL = 'META_VERSION_CONTROL';
@@ -36,7 +36,7 @@ var MediusDB = (function () {
         return function (event) {
             withTransaction({
                 event: event,
-                transactionCallback: function(transaction){
+                transactionCallback: function (transaction) {
                     var database = event.target.result;
 
                     for (var storeName in stores) {
@@ -52,7 +52,7 @@ var MediusDB = (function () {
         function upgradeStore(transaction, database, storeName) {
             MediusDB.createStore({
                 database: database,
-                transaction: transaction,   // To keep alive!
+                transaction: transaction, // To keep alive!
                 store: storeName,
                 keyDefinition: stores[storeName].keyDefinition,
                 indexes: stores[storeName].indexes
@@ -81,11 +81,12 @@ var MediusDB = (function () {
                 afterLastCursor: function () {
                     for (var store in stores) {
                         if (!versions[store] || versions[store] < store.latestVersion) {
-                            stores[store].initialize(getTransactionStore({
+                            withTransactionStore({
                                 database: database,
                                 store: store,
-                                isWritable: true
-                            }));
+                                isWritable: true,
+                                storeCallback: stores[store].initialize
+                            });
                             updateMetadata(store, stores[store].latestVersion);
                         }
                     }
@@ -118,10 +119,17 @@ var MediusDB = (function () {
 
     function withTransaction(config) {
         var event = config.event;
-        
+
         var transaction = config.transction ||
-                event.srcElement && event.srcElement.transaction ||
-                event.originalTarget && event.originalTarget.transaction;
+                event && (
+                        event.srcElement && event.srcElement.transaction ||
+                        event.originalTarget && event.originalTarget.transaction
+                        );
+
+        if (!transaction) {
+            var transactionType = config.isWritable ? 'readwrite' : 'readonly';
+            transaction = config.database.transaction([config.store], transactionType);
+        }
 
         var callback = config.transactionCallback;
         if (callback) {
@@ -164,16 +172,18 @@ var MediusDB = (function () {
         return objectStore;
     }
 
-    function getTransactionStore(config) {
+    function withTransactionStore(config) {
         if (!config || !(config.database || config.transaction)) {
             throw new Error('getTransactionStore is missing required properties');
         }
-        var transaction = config.transaction || (function () {
-            var transactionType = config.isWritable ? 'readwrite' : 'readonly';
-            return config.database.transaction([config.store], transactionType);
-        }());
-        addEvents(transaction, config, 'transaction');
-        return transaction.objectStore(config.store);
+
+        config.transactionCallback = function (transaction) {
+            addEvents(transaction, config, 'transaction');
+            var store = transaction.objectStore(config.store);
+            config.storeCallback(store);
+        };
+
+        withTransaction(config);
     }
 
     // Ranges ---------------------------------------------------------------------------
@@ -208,33 +218,40 @@ var MediusDB = (function () {
 
     // Records ---------------------------------------------------------------------------
 
-    function addRecord(config) {
-        if (!config || !config.database || !config.store || !config.record) {
-            throw new Error('addRecord is missing required properties');
+    function upsertRecord(config) {
+        if (!config || !config.database || !config.store || !config.record || !config.upsertMethod) {
+            throw new Error('upsertRecord is missing required properties');
         }
 
         config.isWritable = true;
-        var request = getTransactionStore(config).add(config.record, config.key);
-        addEvents(request, config);
+        config.storeCallback = function (store) {
+            var request = store[config.upsertMethod](config.record, config.key);
+            addEvents(request, config);
+        };
+        withTransactionStore(config);
+    }
+
+    function addRecord(config) {
+        config.upsertMethod = 'add';
+        upsertRecord(config);
     }
 
     function putRecord(config) {
-        if (!config || !config.database || !config.store || !config.record) {
-            throw new Error('addRecord is missing required properties');
-        }
-
-        config.isWritable = true;
-        var request = getTransactionStore(config).put(config.record);
-        addEvents(request, config);
+        config.upsertMethod = 'put';
+        upsertRecord(config);
     }
 
     function deleteRecord(config) {
-        if (!config || !config.database || !config.store || !config.key) {
-            throw new Error('addRecord is missing required properties');
+        if (!config || !config.database || !config.store || !config.record || !config.upsertMethod) {
+            throw new Error('upsertRecord is missing required properties');
         }
 
-        var request = getTransactionStore(config, true).delete(config.key);
-        addEvents(request, config);
+        config.isWritable = true;
+        config.storeCallback = function (store) {
+            var request = store.delete(config.key);
+            addEvents(request, config);
+        };
+        withTransactionStore(config);
     }
 
     function readRecordByKey(config) {
@@ -242,34 +259,38 @@ var MediusDB = (function () {
             throw new Error('readRecordByKey is missing required properties');
         }
 
-        var request = getTransactionStore(config).get(config.key);
-
-        config.events = config.events || {};
-        config.events.success = config.events.success || config.callback;
-        addEvents(request, config);
+        config.storeCallback = function (store) {
+            var request = store.get(config.key);
+            config.events = config.events || {};
+            config.events.success = config.events.success || config.callback;
+            addEvents(request, config);
+        };
+        withTransactionStore(config);
     }
 
     function readRecordByIndex(config) {
-        if (
-                !config || !config.store || !config.indexName || !config.indexValue
-                ) {
+        if (!config || !config.store || !config.indexName || !config.indexValue) {
             throw new Error('readRecordByIndex is missing required properties');
         }
 
-        var request = getTransactionStore(config).index(config.indexName)
-                .get(config.indexValue);
-
-        config.events = config.events || {};
-        config.events.success = config.events.success || config.callback;
-        addEvents(request, config);
+        config.storeCallback = function (store) {
+            var request = store.index(config.indexName).get(config.indexValue);
+            config.events = config.events || {};
+            config.events.success = config.events.success || config.callback;
+            addEvents(request, config);
+        };
+        withTransactionStore(config);
     }
 
     function doRecordCount(config) {
         if (!config || !config.store) {
             throw new Error('readRecordByIndex is missing required properties');
         }
-        var request = getTransactionStore(config).count();
-        addEvents(request, config);
+        config.storeCallback = function (store) {
+            var request = store.count();
+            addEvents(request, config);
+        };
+        withTransactionStore(config);
     }
 
     function withCursor(config) {
@@ -277,28 +298,31 @@ var MediusDB = (function () {
             throw new Error('cursoredReadRecord is missing required properties');
         }
 
-        var store = getTransactionStore(config);
-        var source = (config.index) ? store.index(config.index) : store;
-        var range = getRange(config);
-        var requestCursor = source.openCursor(range);
+        config.storeCallback = function (store) {
+            var source = (config.index) ? store.index(config.index) : store;
+            var range = getRange(config);
+            var requestCursor = source.openCursor(range);
 
-        var atLeastOnce = false;
-        MediusEvent.add(requestCursor, 'success', function (event) {
-            var cursor = event.target.result;
-            if (cursor) {
-                config.cursorCallback(cursor);
-                cursor.continue();
-                atLeastOnce = true;
-            } else {
-                if (config.afterLastCursor) {
-                    config.afterLastCursor();
+            var atLeastOnce = false;
+            MediusEvent.add(requestCursor, 'success', function (event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    config.cursorCallback(cursor);
+                    cursor.continue();
+                    atLeastOnce = true;
+                } else {
+                    if (config.afterLastCursor) {
+                        config.afterLastCursor();
+                    }
                 }
-            }
 
-            if (!atLeastOnce && config.cursorlessCallback) {
-                config.cursorlessCallback();
-            }
-        });
+                if (!atLeastOnce && config.cursorlessCallback) {
+                    config.cursorlessCallback();
+                }
+            });
+        };
+
+        withTransactionStore(config);
     }
 
     // Other Helpers ---------------------------------------------------------------------------
