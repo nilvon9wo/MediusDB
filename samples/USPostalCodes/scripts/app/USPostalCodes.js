@@ -3,7 +3,7 @@
 var DATABASE = {NAME: 'postalCodes', VERSION: 64};
 var LOCATIONS = {STORENAME: 'locations', VERSION: 5};
 
-function insertZipcodes(database, callback) {
+function insertZipcodes(database) {
     'use strict';
     var statusLine = MediusStatus.createStatus('Initializing zipcode database');
     var lastCharacter = 0;
@@ -45,7 +45,7 @@ function insertZipcodes(database, callback) {
                     var zip = document.getElementById('zipcode_input').value;
                     cities.lookup(zip, function () {
                         statusLine.remove();
-                        alert('Data loaded.  Please refresh the page and try again');
+                        location.reload();
                     });
                 }
             }
@@ -59,8 +59,6 @@ function insertZipcodes(database, callback) {
         loadHandler: handleDataChunk,
         url: 'data/zipcode.csv'
     });
-
-    callback();
 }
 
 function withPostalCodeDatabase(onSuccess) {
