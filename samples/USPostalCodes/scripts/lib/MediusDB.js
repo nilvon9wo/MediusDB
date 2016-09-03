@@ -21,6 +21,7 @@ var MediusDB = (function () {
     // Database ---------------------------------------------------------------------------
 
     function withDatabase(config) {
+        'use strict';
         if (!config || !config.database.name || !config.database.version) {
             throw new Error('openRequest is missing required properties');
         }
@@ -32,7 +33,6 @@ var MediusDB = (function () {
 
     function defaultDatabaseUpgrade(stores) {
         'use strict';
-
         return function (event) {
             withTransaction({
                 event: event,
@@ -81,8 +81,8 @@ var MediusDB = (function () {
                 afterLastCursor: function () {
                     for (var store in stores) {
                         if (!versions[store] || versions[store] < store.latestVersion) {
-                            stores[store].initialize(database, function(){
-                            updateMetadata(store, stores[store].latestVersion);
+                            stores[store].initialize(database, function () {
+                                updateMetadata(store, stores[store].latestVersion);
                             });
                         }
                     }
@@ -114,6 +114,7 @@ var MediusDB = (function () {
     // Transactions ---------------------------------------------------------------------------
 
     function withTransaction(config) {
+        'use strict';
         var event = config.event;
         var transaction = config.transction ||
                 event && (
@@ -136,6 +137,7 @@ var MediusDB = (function () {
     // Stores ---------------------------------------------------------------------------
 
     function createStore(config) {
+        'use strict';
         if (!config || !config.database || !config.store) {
             throw new Error('createStore is missing required properties');
         }
@@ -157,6 +159,7 @@ var MediusDB = (function () {
     }
 
     function withStore(config) {
+        'use strict';
         if (!config || !(config.database || config.transaction)) {
             throw new Error('getTransactionStore is missing required properties');
         }
@@ -171,6 +174,7 @@ var MediusDB = (function () {
     }
 
     function monitorStore(config) {
+        'use strict';
         config.storeCallback = function (store, transaction) {
             addEvents(transaction, config);
         };
@@ -181,6 +185,7 @@ var MediusDB = (function () {
     // Ranges ---------------------------------------------------------------------------
 
     function getRange(config) {
+        'use strict';
         var range = config.range;
         if (!range) {
             return;
@@ -211,6 +216,7 @@ var MediusDB = (function () {
     // Records ---------------------------------------------------------------------------
 
     function upsertRecord(config) {
+        'use strict';
         if (!config || !config.database || !config.store || !config.record || !config.upsertMethod) {
             throw new Error('upsertRecord is missing required properties');
         }
@@ -224,16 +230,19 @@ var MediusDB = (function () {
     }
 
     function addRecord(config) {
+        'use strict';
         config.upsertMethod = 'add';
         upsertRecord(config);
     }
 
     function putRecord(config) {
+        'use strict';
         config.upsertMethod = 'put';
         upsertRecord(config);
     }
 
     function deleteRecord(config) {
+        'use strict';
         if (!config || !config.database || !config.store || !config.record || !config.upsertMethod) {
             throw new Error('upsertRecord is missing required properties');
         }
@@ -247,6 +256,7 @@ var MediusDB = (function () {
     }
 
     function readRecordByKey(config) {
+        'use strict';
         if (!config || !config.store || !config.key) {
             throw new Error('readRecordByKey is missing required properties');
         }
@@ -261,6 +271,7 @@ var MediusDB = (function () {
     }
 
     function readRecordByIndex(config) {
+        'use strict';
         if (!config || !config.store || !config.indexName || !config.indexValue) {
             throw new Error('readRecordByIndex is missing required properties');
         }
@@ -275,6 +286,7 @@ var MediusDB = (function () {
     }
 
     function doRecordCount(config) {
+        'use strict';
         if (!config || !config.store) {
             throw new Error('readRecordByIndex is missing required properties');
         }
@@ -286,6 +298,7 @@ var MediusDB = (function () {
     }
 
     function withCursor(config) {
+        'use strict';
         if (!config || !config.store || !config.cursorCallback) {
             throw new Error('cursoredReadRecord is missing required properties');
         }
@@ -320,6 +333,7 @@ var MediusDB = (function () {
     // Other Helpers ---------------------------------------------------------------------------
 
     function addEvents(target, config, eventSetPrefix) {
+        'use strict';
         var eventSetName = 'events';
         if (eventSetPrefix) {
             eventSetName = eventSetPrefix + 'Events';

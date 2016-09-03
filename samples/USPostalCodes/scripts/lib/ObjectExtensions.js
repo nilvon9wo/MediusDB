@@ -14,7 +14,7 @@ Object.toArray = function (array, startIndex) {
     return Array.prototype.slice.call(array, startIndex);
 };
 
-Object.method('toArray', function (startIndex){
+Object.method('toArray', function (startIndex) {
     'use strict';
     return Object.toArray(this, startIndex);
 });
