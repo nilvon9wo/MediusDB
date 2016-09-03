@@ -72,7 +72,7 @@ var MediusDB = (function () {
                 },
                 cursorlessCallback: function () {
                     updateMetadata(VERSION_CONTROL, 1);
-                    alert('Please refresh the page and try again');
+                    alert('Please wait while the data loads.');
                 },
                 afterLastCursor   : function () {
                     for (var store in stores) {

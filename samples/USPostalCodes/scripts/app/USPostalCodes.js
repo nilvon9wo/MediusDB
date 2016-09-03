@@ -37,8 +37,10 @@ function insertZipcodes(zipcodeStore) {
         }
 
         if (event.type === 'load') {
-            cities.lookup('02134', function () {
-                document.body.removeChild(statusLine);
+            var zip = document.getElementById('zipcode_input').value;
+            cities.lookup(zip, function () {
+                statusLine.remove();
+                alert('Data loaded.  Please refresh the page and try again');
             });
         }
     }
