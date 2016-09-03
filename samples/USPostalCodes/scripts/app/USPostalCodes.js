@@ -16,7 +16,6 @@ function insertZipcodes(database, callback) {
             isWritable: true,
             storeCallback: function (store, transaction) {
                 function storeZipcodes(lines) {
-                    console.log('storeZipcodes', transaction);
                     lines.toArray().forEach(function (line) {
                         statusLine.display('Putting: ' + line);
                         var fields = line.split(',');
@@ -60,7 +59,7 @@ function insertZipcodes(database, callback) {
         loadHandler: handleDataChunk,
         url: 'data/zipcode.csv'
     });
-    
+
     callback();
 }
 

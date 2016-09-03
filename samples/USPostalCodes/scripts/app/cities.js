@@ -1,4 +1,4 @@
-/* global DATABASE_NAME, logHelper, DATABASE_STORE, IndexedDB, DATABASE_VERSION */
+/* global DATABASE_NAME, logHelper, DATABASE_STORE, IndexedDB, DATABASE_VERSION, MediusDB, LOCATIONS */
 
 var cities = {
     display: function (zipcode) {
@@ -7,15 +7,14 @@ var cities = {
             document.getElementById('city').value = cityName;
         });
     },
-
     lookup: function (zipcode, callback) {
         'use strict';
         withPostalCodeDatabase(function (database) {
             MediusDB.readRecordByKey({
                 database: database,
-                store   : LOCATIONS.STORENAME,
-                key     : zipcode,
-                events  : {
+                store: LOCATIONS.STORENAME,
+                key: zipcode,
+                events: {
                     success: function (event) {
                         var resultCity = event.target.result;
                         if (resultCity) {

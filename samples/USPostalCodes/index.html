@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Zipcode Database</title>
-		<link rel="shortcut icon" href=""/>
-		<link rel="stylesheet" href="styles/USPostalCodes.css"/>
-	</head>
-	<body>
-		<div>
-			<p>Enter a zip code to find its city: </p>
-			<label for="zipcode_input">Zipcode: <input id="zipcode_input" onchange="cities.display(this.value)"/></label>
-			City:
-			<output id="city"></output>
-		</div>
-		<div>
-			<p>Enter a city name (case sensitive, without state) to find cities and their zipcodes:</p>
-			<label for="city_input">City: <input id="city_input" onchange="zipcodes.display(this.value)"/></label>
-			<div id="zipcodes"></div>
-		</div>
+    <head>
+        <meta charset="UTF-8">
+        <title>Zipcode Database</title>
+        <link rel="shortcut icon" href=""/>
+        <link rel="stylesheet" href="styles/USPostalCodes.css"/>
+    </head>
+    <body>
+        <div>
+            <p>Enter a zip code to find its city: </p>
+            <label for="zipcode_input">Zipcode: <input id="zipcode_input" onchange="cities.display(this.value)"/></label>
+            City:
+            <output id="city"></output>
+        </div>
+        <div>
+            <p>Enter a city name (case sensitive, without state) to find cities and their zipcodes:</p>
+            <label for="city_input">City: <input id="city_input" onchange="zipcodes.display(this.value)"/></label>
+            <div id="zipcodes"></div>
+        </div>
 
-		<p><i>Your first query may take a very long time to complete.</i></p>
-		<p><i>You may need to start Chrome with --unlimited-quota-for-indexeddb</i></p>
+        <p><i>Your first query may take a very long time to complete.</i></p>
+        <p><i>You may need to start Chrome with --unlimited-quota-for-indexeddb</i></p>
 
-		<button onclick="deleteDatabase()">Delete Database</button>
+        <button onclick="deleteDatabase()">Delete Database</button>
 
-		<script src="scripts/lib/MediusDB.js"></script>
-		<script src="scripts/lib/MediusEvent.js"></script>
-		<script src="scripts/lib/MediusLog.js"></script>
-		<script src="scripts/lib/MediusStatus.js"></script>
-		<script src="scripts/lib/MediusHttp.js"></script>
-		<script src="scripts/lib/ObjectExtensions.js"></script>
-		<script src="scripts/app/cities.js"></script>
-		<script src="scripts/app/zipcodes.js"></script>
-		<script src="scripts/app/USPostalCodes.js"></script>
-	</body>
+        <script src="scripts/lib/MediusDB.js"></script>
+        <script src="scripts/lib/MediusEvent.js"></script>
+        <script src="scripts/lib/MediusLog.js"></script>
+        <script src="scripts/lib/MediusStatus.js"></script>
+        <script src="scripts/lib/MediusHttp.js"></script>
+        <script src="scripts/lib/ObjectExtensions.js"></script>
+        <script src="scripts/app/cities.js"></script>
+        <script src="scripts/app/zipcodes.js"></script>
+        <script src="scripts/app/USPostalCodes.js"></script>
+    </body>
 </html>
