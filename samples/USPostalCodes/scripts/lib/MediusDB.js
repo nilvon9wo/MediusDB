@@ -1,4 +1,4 @@
-/* global IndexedDB, indexedDB, Event, Log, IDBKeyRange, MediusEvent */
+/* global IndexedDB, indexedDB, Event, Log, IDBKeyRange, MediusEvent, IDBDatabase, MediaLog */
 
 var MediusDB = (function () {
     var VERSION_CONTROL = 'META_VERSION_CONTROL';
@@ -22,13 +22,24 @@ var MediusDB = (function () {
 
     function withDatabase(config) {
         'use strict';
-        if (!config || !config.database.name || !config.database.version) {
-            throw new Error('openRequest is missing required properties');
+        if (!config || !config.database) {
+            throw new Error('withDatabase is missing required properties');
         }
 
-        var openRequest = indexedDB.open(config.database.name, config.database.version);
-        addEvents(openRequest, config);
-        return openRequest;
+        if (config.database instanceof IDBDatabase) {
+            try {
+                config.databaseCallback(config.database);
+                if (config.afterDatabaseCallback) {
+                    config.afterDatabaseCallback();
+                }
+            } catch (e) {
+                MediusLog.error('withDatabase could not complete: ', config);
+            }
+        } else {
+            var openRequest = indexedDB.open(config.database.name, config.database.version);
+            addEvents(openRequest, config);
+            return openRequest;
+        }
     }
 
     function defaultDatabaseUpgrade(stores) {
@@ -81,8 +92,12 @@ var MediusDB = (function () {
                 afterLastCursor: function () {
                     for (var store in stores) {
                         if (!versions[store] || versions[store] < store.latestVersion) {
-                            stores[store].initialize(database, function () {
-                                updateMetadata(store, stores[store].latestVersion);
+                            withDatabase({
+                                database: database,
+                                databaseCallback: stores[store].initialize,
+                                afterDatabaseCallback: function () {
+                                    updateMetadata(store, stores[store].latestVersion);
+                                }
                             });
                         }
                     }
