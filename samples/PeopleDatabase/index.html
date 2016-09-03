@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>People in IndexedDB</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="shortcut icon" href=""/>
+    </head>
+    <body>
+        <h1>People in IndexedDB</h1>
+        <input type="text" id="name" placeholder="Name"><br/>
+        <input type="text" id="email" placeholder="Email"><br/>
+        <button id="addPerson">Add Person</button>
+
+        <hr/>
+
+        <table>
+            <tr>
+                <td width="50%">
+                    <input type="text" id="queryField" placeholder="Key"><br/>
+                </td>
+                <td width="50%">
+                    <label for="nameSearchStart">Starting with: 
+                        <input type="text" id="nameSearchStart" placeholder="Name">
+                    </label><br/>
+                    <label for="nameSearchEnd">Ending with: 
+                        <input type="text" id="nameSearchEnd" placeholder="Name">
+                    </label><br/>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <button id="getPersonByKey">Get Person By Key</button>
+                    <button id="getPersonByEmail">Get Person By Email</button><br/>
+                </td>
+                <td width="50%">
+                    <button id="getPeopleByNameRange">Get By Name Range</button>
+                    <button id="getPeople">Get All People</button><br/>
+                </td>
+            </tr>
+        </table>
+
+        <div id="results">
+            <h2 id="resultHeader"></h2>
+            <dl id="resultList"></dl>
+        </div>
+        
+        <script src="scripts/lib/MediusDB.js"></script>
+        <script src="scripts/lib/MediusElement.js"></script>
+        <script src="scripts/lib/MediusLog.js"></script>
+        <script src="scripts/lib/MediusEvent.js"></script>
+        <script src="scripts/lib/ObjectExtensions.js"></script>
+
+        <script src="scripts/models/Person.js"></script>
+        <script src="scripts/app.js"></script>
+    </body>
+</html>
