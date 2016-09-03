@@ -39,7 +39,7 @@ var MediusDB = (function () {
             var database    = event.target.result;
 
             for (var storeName in stores) {
-                if (database.objectStoreNames.contains(storeName) && stores[storeName].forceRecreate) {
+                if (database.objectStoreNames.contains(storeName)) {
                     database.deleteObjectStore(storeName);
                 }
                 upgradeStore(transaction, database, storeName);

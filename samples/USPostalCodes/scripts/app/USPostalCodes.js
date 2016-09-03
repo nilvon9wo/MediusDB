@@ -1,4 +1,4 @@
-/* global statusHelper, logHelper, IndexedDB, cities, Event */
+/* global MediusStatus, cities, MediusEvent, MediusDB */
 
 var DATABASE  = {NAME: 'postalCodes', VERSION: 64};
 var LOCATIONS = {STORENAME: 'locations', VERSION: 5};
@@ -62,15 +62,13 @@ function withPostalCodeDatabase(onSuccess) {
         events  : {
             upgradeneeded : MediusDB.defaultDatabaseUpgrade({
                 META_VERSION_CONTROL: {
-                    keyDefinition: {keyPath: 'storeName', autoIncrement: true},
-                    forceRecreate: true
+                    keyDefinition: {keyPath: 'storeName', autoIncrement: true}
                 },
                 locations           : {
                     keyDefinition: {keyPath: 'zipcode', autoIncrement: true},
                     indexes      : [
                         {propertyName: 'city', indexName: 'cities', options: {unique: false}}
-                    ],
-                    forceRecreate: true
+                    ]
                 }
             }),
             upgradeSuccess: MediusDB.initializeDatabase({
@@ -82,7 +80,7 @@ function withPostalCodeDatabase(onSuccess) {
             success       : function (event) {
                 var database = event.target.result;
                 onSuccess(database, event);
-            },
+            }
         }
     });
 }
