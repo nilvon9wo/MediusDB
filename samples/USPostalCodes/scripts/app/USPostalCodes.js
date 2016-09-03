@@ -12,6 +12,7 @@ function insertZipcodes(zipcodeStore) {
     function handleDataChunk(event) {
         function storeZipcodes(lines) {
             lines.toArray().forEach(function (line) {
+                statusLine.display('Putting: ' + line);
                 var fields = line.split(',');
                 zipcodeStore.put({
                     zipcode  : fields[0],
