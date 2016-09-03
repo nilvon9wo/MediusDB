@@ -9,6 +9,13 @@ function insertZipcodes(database) {
     var lastCharacter = 0;
     var numberOfLines = 0;
 
+    MediusHttp.get({
+        errorHandler: status.display,
+        progressHandler: handleDataChunk,
+        loadHandler: handleDataChunk,
+        url: 'data/zipcode.csv'
+    });
+
     function handleDataChunk(event) {
         var responseText = event.target.responseText;
         var lastNewLine = responseText.lastIndexOf('\n');
@@ -17,25 +24,7 @@ function insertZipcodes(database) {
             var chunk = responseText.substring(lastCharacter, lastNewLine);
             lastCharacter = lastNewLine + 1;
             var lines = chunk.split('\n');
-
-            MediusDB.withStore({
-                database: database,
-                store: LOCATIONS.STORENAME,
-                isWritable: true,
-                storeCallback: function (store, transaction) {
-                    lines.toArray().forEach(function (line) {
-                        var fields = line.split(',');
-                        store.put({
-                            zipcode: fields[0],
-                            city: fields[1],
-                            state: fields[2],
-                            latitude: fields[3],
-                            longitude: fields[4]
-                        });
-                    });
-                }
-            });
-            
+            storeLines(lines);
             numberOfLines += lines.length;
             statusLine.display('Initializing zipcode database: loaded ' + numberOfLines + ' records.');
         }
@@ -45,12 +34,25 @@ function insertZipcodes(database) {
         }
     }
 
-    MediusHttp.get({
-        errorHandler: status.display,
-        progressHandler: handleDataChunk,
-        loadHandler: handleDataChunk,
-        url: 'data/zipcode.csv'
-    });
+    function storeLines(lines) {
+        MediusDB.withStore({
+            database: database,
+            store: LOCATIONS.STORENAME,
+            isWritable: true,
+            storeCallback: function (store, transaction) {
+                lines.toArray().forEach(function (line) {
+                    var fields = line.split(',');
+                    store.put({
+                        zipcode: fields[0],
+                        city: fields[1],
+                        state: fields[2],
+                        latitude: fields[3],
+                        longitude: fields[4]
+                    });
+                });
+            }
+        });
+    }
 }
 
 function withPostalCodeDatabase(onSuccess) {
