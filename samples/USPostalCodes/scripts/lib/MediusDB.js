@@ -81,13 +81,9 @@ var MediusDB = (function () {
                 afterLastCursor: function () {
                     for (var store in stores) {
                         if (!versions[store] || versions[store] < store.latestVersion) {
-                            withTransactionStore({
-                                database: database,
-                                store: store,
-                                isWritable: true,
-                                storeCallback: stores[store].initialize
-                            });
+                            stores[store].initialize(database, function(){
                             updateMetadata(store, stores[store].latestVersion);
+                            });
                         }
                     }
                 }
@@ -119,7 +115,6 @@ var MediusDB = (function () {
 
     function withTransaction(config) {
         var event = config.event;
-
         var transaction = config.transction ||
                 event && (
                         event.srcElement && event.srcElement.transaction ||
@@ -131,21 +126,10 @@ var MediusDB = (function () {
             transaction = config.database.transaction([config.store], transactionType);
         }
 
-        var callback = config.transactionCallback;
-        if (callback) {
-            callback(transaction);
+        if (config.transactionCallback) {
+            config.transactionCallback(transaction);
         }
 
-        return transaction;
-    }
-
-    function monitorTransaction(config) {
-        if (!config || !config.database || !config.store) {
-            throw new Error('monitorTransaction is missing required properties');
-        }
-
-        var transaction = config.database.transaction([config.store], 'readonly');
-        addEvents(transaction, config);
         return transaction;
     }
 
@@ -172,7 +156,7 @@ var MediusDB = (function () {
         return objectStore;
     }
 
-    function withTransactionStore(config) {
+    function withStore(config) {
         if (!config || !(config.database || config.transaction)) {
             throw new Error('getTransactionStore is missing required properties');
         }
@@ -180,11 +164,19 @@ var MediusDB = (function () {
         config.transactionCallback = function (transaction) {
             addEvents(transaction, config, 'transaction');
             var store = transaction.objectStore(config.store);
-            config.storeCallback(store);
+            config.storeCallback(store, transaction);
         };
 
         withTransaction(config);
     }
+
+    function monitorStore(config) {
+        config.storeCallback = function (store, transaction) {
+            addEvents(transaction, config);
+        };
+        withStore(config);
+    }
+
 
     // Ranges ---------------------------------------------------------------------------
 
@@ -224,11 +216,11 @@ var MediusDB = (function () {
         }
 
         config.isWritable = true;
-        config.storeCallback = function (store) {
+        config.storeCallback = function (store, transaction) {
             var request = store[config.upsertMethod](config.record, config.key);
             addEvents(request, config);
         };
-        withTransactionStore(config);
+        withStore(config);
     }
 
     function addRecord(config) {
@@ -247,11 +239,11 @@ var MediusDB = (function () {
         }
 
         config.isWritable = true;
-        config.storeCallback = function (store) {
+        config.storeCallback = function (store, transaction) {
             var request = store.delete(config.key);
             addEvents(request, config);
         };
-        withTransactionStore(config);
+        withStore(config);
     }
 
     function readRecordByKey(config) {
@@ -259,13 +251,13 @@ var MediusDB = (function () {
             throw new Error('readRecordByKey is missing required properties');
         }
 
-        config.storeCallback = function (store) {
+        config.storeCallback = function (store, transaction) {
             var request = store.get(config.key);
             config.events = config.events || {};
             config.events.success = config.events.success || config.callback;
             addEvents(request, config);
         };
-        withTransactionStore(config);
+        withStore(config);
     }
 
     function readRecordByIndex(config) {
@@ -273,24 +265,24 @@ var MediusDB = (function () {
             throw new Error('readRecordByIndex is missing required properties');
         }
 
-        config.storeCallback = function (store) {
+        config.storeCallback = function (store, transaction) {
             var request = store.index(config.indexName).get(config.indexValue);
             config.events = config.events || {};
             config.events.success = config.events.success || config.callback;
             addEvents(request, config);
         };
-        withTransactionStore(config);
+        withStore(config);
     }
 
     function doRecordCount(config) {
         if (!config || !config.store) {
             throw new Error('readRecordByIndex is missing required properties');
         }
-        config.storeCallback = function (store) {
+        config.storeCallback = function (store, transaction) {
             var request = store.count();
             addEvents(request, config);
         };
-        withTransactionStore(config);
+        withStore(config);
     }
 
     function withCursor(config) {
@@ -298,7 +290,7 @@ var MediusDB = (function () {
             throw new Error('cursoredReadRecord is missing required properties');
         }
 
-        config.storeCallback = function (store) {
+        config.storeCallback = function (store, transaction) {
             var source = (config.index) ? store.index(config.index) : store;
             var range = getRange(config);
             var requestCursor = source.openCursor(range);
@@ -322,7 +314,7 @@ var MediusDB = (function () {
             });
         };
 
-        withTransactionStore(config);
+        withStore(config);
     }
 
     // Other Helpers ---------------------------------------------------------------------------
@@ -353,10 +345,10 @@ var MediusDB = (function () {
         initializeDatabase: initializeDatabase,
         deleteDatabase: deleteDatabase,
         withDatabase: withDatabase,
-        // Transaction
-        monitorTransaction: monitorTransaction,
         // Store
         createStore: createStore,
+        monitorStore: monitorStore,
+        withStore: withStore,
         // Record
         addRecord: addRecord,
         deleteRecord: deleteRecord,
