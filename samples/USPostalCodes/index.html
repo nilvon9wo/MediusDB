@@ -9,13 +9,13 @@
     <body>
         <div>
             <p>Enter a zip code to find its city: </p>
-            <label for="zipcode_input">Zipcode: <input id="zipcode_input" onchange="cities.display(this.value)"/></label>
+            <label for="zipcode_input">Zipcode: <input id="zipcode_input" onchange="Cities.display(this.value)"/></label>
             City:
             <output id="city"></output>
         </div>
         <div>
             <p>Enter a city name (case sensitive, without state) to find cities and their zipcodes:</p>
-            <label for="city_input">City: <input id="city_input" onchange="zipcodes.display(this.value)"/></label>
+            <label for="city_input">City: <input id="city_input" onchange="Zipcodes.display(this.value)"/></label>
             <div id="zipcodes"></div>
         </div>
 
@@ -27,11 +27,11 @@
         <script src="scripts/lib/MediusDB.js"></script>
         <script src="scripts/lib/MediusEvent.js"></script>
         <script src="scripts/lib/MediusLog.js"></script>
-        <script src="scripts/lib/MediusStatus.js"></script>
         <script src="scripts/lib/MediusHttp.js"></script>
         <script src="scripts/lib/ObjectExtensions.js"></script>
-        <script src="scripts/app/cities.js"></script>
-        <script src="scripts/app/zipcodes.js"></script>
-        <script src="scripts/app/USPostalCodes.js"></script>
+        <script src="scripts/app/Cities.js"></script>
+        <script src="scripts/app/Zipcodes.js"></script>
+        <script src="scripts/app/Status.js"></script>
+        <script src="scripts/app.js"></script>
     </body>
 </html>

@@ -1,9 +1,9 @@
 /* global DATABASE_NAME, logHelper, DATABASE_STORE, IndexedDB, DATABASE_VERSION, MediusDB, LOCATIONS */
 
-var cities = {
+var Cities = {
     display: function (zipcode) {
         'use strict';
-        cities.lookup(zipcode, function (cityName) {
+        Cities.lookup(zipcode, function (cityName) {
             document.getElementById('city').value = cityName;
         });
     },

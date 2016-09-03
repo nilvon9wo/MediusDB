@@ -1,4 +1,4 @@
-/* global IndexedDB, indexedDB, Event, Log, IDBKeyRange, MediusEvent, IDBDatabase, MediaLog */
+/* global IndexedDB, indexedDB, Event, Log, IDBKeyRange, MediusEvent, IDBDatabase, MediaLog, MediusLog */
 
 var MediusDB = (function () {
     var VERSION_CONTROL = 'META_VERSION_CONTROL';
@@ -94,6 +94,7 @@ var MediusDB = (function () {
                         if (!versions[store] || versions[store] < store.latestVersion) {
                             withDatabase({
                                 database: database,
+                                store: store,
                                 databaseCallback: stores[store].initialize,
                                 afterDatabaseCallback: function () {
                                     updateMetadata(store, stores[store].latestVersion);

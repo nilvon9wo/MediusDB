@@ -1,11 +1,11 @@
 /* global DATABASE_NAME, IDBKeyRange, logHelper, DATABASE_STORE, MediusDB, LOCATIONS */
 
-var zipcodes = {
+var Zipcodes = {
     display: function (city) {
         'use strict';
         var output = document.getElementById('zipcodes');
         output.innerHTML = 'Matching zipcodes';
-        zipcodes.lookup(city, function (result) {
+        Zipcodes.lookup(city, function (result) {
             var div = document.createElement('div');
             var text = result.zipcode + ': ' + result.city + ', ' + result.state;
             div.appendChild(document.createTextNode(text));

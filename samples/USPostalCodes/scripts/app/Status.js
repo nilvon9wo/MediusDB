@@ -1,4 +1,4 @@
-MediusStatus = {
+Status = {
     createStatus: function (message) {
         'use strict';
         var statusLine;
