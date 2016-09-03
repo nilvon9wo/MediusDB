@@ -32,11 +32,9 @@ it took two weeks (admittedly, with interruptions) to create an unstable solutio
  MediusDB presently depends upon:
   
   1. A zipcode.csv file:  Boutell.com offers a suitable file at https://boutell.com/zipcodes/
-  1. Four additional scripts.
-  ** Object.js
-  ** Event.js
-  ** Log.js
-  ** Status.js
+  1. Two additional scripts.
+  ** MediusEvent.js
+  ** MediusLog.js
   
   I've chosen to keep separate  as I want to keep MediusDB.js focused on indexedDB. 
   You'll find these scripts within the "US Postal Codes" sample project /scripts/lib folder.
@@ -46,9 +44,11 @@ it took two weeks (admittedly, with interruptions) to create an unstable solutio
  
 ## Samples
  
-In the sample directory, you'll find:
+In the sample directory, you'll find three sample projects demonstrating how MediusDB can be used:
  
  1. "US Postal Codes"
+ 2. "People Database"
+ 3. "Note Database"
  
  (Others may be added later.)
  
