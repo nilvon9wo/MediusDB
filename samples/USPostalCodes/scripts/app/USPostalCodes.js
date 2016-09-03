@@ -1,4 +1,4 @@
-/* global MediusStatus, cities, MediusEvent, MediusDB */
+/* global MediusStatus, cities, MediusEvent, MediusDB, MediusHttp */
 
 var DATABASE  = {NAME: 'postalCodes', VERSION: 64};
 var LOCATIONS = {STORENAME: 'locations', VERSION: 5};
@@ -43,14 +43,13 @@ function insertZipcodes(zipcodeStore) {
         }
     }
 
-    var xhr = new XMLHttpRequest();
-    MediusEvent.add(xhr, 'error', status.display);
-    MediusEvent.add(xhr, 'progress', handleDataChunk);
-    MediusEvent.add(xhr, 'load', handleDataChunk);
-    xhr.open('GET', 'data/zipcode.csv');
-    xhr.send();
+    MediusHttp.get({
+        errorHandler: status.display,
+        progressHandler: handleDataChunk,
+        loadHandler: handleDataChunk,
+        url: 'data/zipcode.csv'
+    });
 }
-
 
 function withPostalCodeDatabase(onSuccess) {
     'use strict';
