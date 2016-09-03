@@ -5,17 +5,17 @@ var MediusDB = (function () {
 
     // Windows ---------------------------------------------------------------------------
 
-    window.indexedDB      = getDeprefixed('indexedDB');
+    window.indexedDB = getDeprefixed('indexedDB');
     window.IDBTransaction = getDeprefixed('IDBTransaction') || {READ_WRITE: 'readwrite'};
-    window.IDBKeyRange    = getDeprefixed('IDBKeyRange');
+    window.IDBKeyRange = getDeprefixed('IDBKeyRange');
 
     function getDeprefixed(methodName) {
         'use strict';
         var upperMethodName = methodName.charAt(0).toUpperCase() + methodName.slice(1);
         return window[methodName] ||
-            window['webkit' + upperMethodName] ||
-            window['moz' + upperMethodName] ||
-            window['ms' + upperMethodName];
+                window['webkit' + upperMethodName] ||
+                window['moz' + upperMethodName] ||
+                window['ms' + upperMethodName];
     }
 
     // Database ---------------------------------------------------------------------------
@@ -34,24 +34,28 @@ var MediusDB = (function () {
         'use strict';
 
         return function (event) {
-            var transaction = event.srcElement && event.srcElement.transaction ||
-                event.originalTarget && event.originalTarget.transaction;
-            var database    = event.target.result;
+            withTransaction({
+                event: event,
+                transactionCallback: function(transaction){
+                    var database = event.target.result;
 
-            for (var storeName in stores) {
-                if (database.objectStoreNames.contains(storeName)) {
-                    database.deleteObjectStore(storeName);
+                    for (var storeName in stores) {
+                        if (database.objectStoreNames.contains(storeName)) {
+                            database.deleteObjectStore(storeName);
+                        }
+                        upgradeStore(transaction, database, storeName);
+                    }
                 }
-                upgradeStore(transaction, database, storeName);
-            }
+            });
         };
 
         function upgradeStore(transaction, database, storeName) {
             MediusDB.createStore({
-                database     : database,
-                store        : storeName,
+                database: database,
+                transaction: transaction,   // To keep alive!
+                store: storeName,
                 keyDefinition: stores[storeName].keyDefinition,
-                indexes      : stores[storeName].indexes
+                indexes: stores[storeName].indexes
             });
         }
     }
@@ -63,23 +67,23 @@ var MediusDB = (function () {
         return function (event) {
             var database = event.target.result;
             withCursor({
-                database          : database,
-                store             : VERSION_CONTROL,
-                key               : 'storeName',
-                isWritable        : true,
-                cursorCallback    : function (cursor) {
+                database: database,
+                store: VERSION_CONTROL,
+                key: 'storeName',
+                isWritable: true,
+                cursorCallback: function (cursor) {
                     versions[cursor.value.storeName] = cursor.value.version;
                 },
                 cursorlessCallback: function () {
                     updateMetadata(VERSION_CONTROL, 1);
                     alert('Please wait while the data loads.');
                 },
-                afterLastCursor   : function () {
+                afterLastCursor: function () {
                     for (var store in stores) {
                         if (!versions[store] || versions[store] < store.latestVersion) {
                             stores[store].initialize(getTransactionStore({
-                                database  : database,
-                                store     : store,
+                                database: database,
+                                store: store,
                                 isWritable: true
                             }));
                             updateMetadata(store, stores[store].latestVersion);
@@ -91,10 +95,10 @@ var MediusDB = (function () {
             function updateMetadata(store, version) {
                 putRecord({
                     database: database,
-                    store   : 'META_VERSION_CONTROL',
-                    record  : {
-                        storeName : store,
-                        version   : version,
+                    store: 'META_VERSION_CONTROL',
+                    record: {
+                        storeName: store,
+                        version: version,
                         createDate: new Date()
                     }
                 });
@@ -104,13 +108,28 @@ var MediusDB = (function () {
 
     function deleteDatabase(databaseName) {
         'use strict';
-        var request       = window.indexedDB.deleteDatabase(databaseName);
+        var request = window.indexedDB.deleteDatabase(databaseName);
         request.onSuccess = function () {
             alert('deleted');
         };
     }
 
     // Transactions ---------------------------------------------------------------------------
+
+    function withTransaction(config) {
+        var event = config.event;
+        
+        var transaction = config.transction ||
+                event.srcElement && event.srcElement.transaction ||
+                event.originalTarget && event.originalTarget.transaction;
+
+        var callback = config.transactionCallback;
+        if (callback) {
+            callback(transaction);
+        }
+
+        return transaction;
+    }
 
     function monitorTransaction(config) {
         if (!config || !config.database || !config.store) {
@@ -128,17 +147,17 @@ var MediusDB = (function () {
         if (!config || !config.database || !config.store) {
             throw new Error('createStore is missing required properties');
         }
-        var database      = config.database;
-        var store         = config.store;
+        var database = config.database;
+        var store = config.store;
         var keyDefinition = config.keyDefinition;
-        var indexes       = config.indexes;
+        var indexes = config.indexes;
 
         var objectStore = database.createObjectStore(store, keyDefinition);
         if (indexes) {
             indexes.forEach(function (index) {
                 var propertyName = index.propertyName;
-                var indexName    = index.indexName || propertyName;
-                var options      = index.options || {};
+                var indexName = index.indexName || propertyName;
+                var options = index.options || {};
                 objectStore.createIndex(indexName, propertyName, options);
             });
         }
@@ -150,9 +169,9 @@ var MediusDB = (function () {
             throw new Error('getTransactionStore is missing required properties');
         }
         var transaction = config.transaction || (function () {
-                var transactionType = config.isWritable ? 'readwrite' : 'readonly';
-                return config.database.transaction([config.store], transactionType);
-            }());
+            var transactionType = config.isWritable ? 'readwrite' : 'readonly';
+            return config.database.transaction([config.store], transactionType);
+        }());
         addEvents(transaction, config, 'transaction');
         return transaction.objectStore(config.store);
     }
@@ -195,7 +214,7 @@ var MediusDB = (function () {
         }
 
         config.isWritable = true;
-        var request       = getTransactionStore(config).add(config.record, config.key);
+        var request = getTransactionStore(config).add(config.record, config.key);
         addEvents(request, config);
     }
 
@@ -205,7 +224,7 @@ var MediusDB = (function () {
         }
 
         config.isWritable = true;
-        var request       = getTransactionStore(config).put(config.record);
+        var request = getTransactionStore(config).put(config.record);
         addEvents(request, config);
     }
 
@@ -225,22 +244,22 @@ var MediusDB = (function () {
 
         var request = getTransactionStore(config).get(config.key);
 
-        config.events         = config.events || {};
+        config.events = config.events || {};
         config.events.success = config.events.success || config.callback;
         addEvents(request, config);
     }
 
     function readRecordByIndex(config) {
         if (
-            !config || !config.store || !config.indexName || !config.indexValue
-        ) {
+                !config || !config.store || !config.indexName || !config.indexValue
+                ) {
             throw new Error('readRecordByIndex is missing required properties');
         }
 
         var request = getTransactionStore(config).index(config.indexName)
-            .get(config.indexValue);
+                .get(config.indexValue);
 
-        config.events         = config.events || {};
+        config.events = config.events || {};
         config.events.success = config.events.success || config.callback;
         addEvents(request, config);
     }
@@ -258,9 +277,9 @@ var MediusDB = (function () {
             throw new Error('cursoredReadRecord is missing required properties');
         }
 
-        var store         = getTransactionStore(config);
-        var source        = (config.index) ? store.index(config.index) : store;
-        var range         = getRange(config);
+        var store = getTransactionStore(config);
+        var source = (config.index) ? store.index(config.index) : store;
+        var range = getRange(config);
         var requestCursor = source.openCursor(range);
 
         var atLeastOnce = false;
@@ -304,27 +323,24 @@ var MediusDB = (function () {
 
     return {
         // Database
-        VERSION_CONTROL       : VERSION_CONTROL,
-        isSupported           : 'indexedDB' in window,
+        VERSION_CONTROL: VERSION_CONTROL,
+        isSupported: 'indexedDB' in window,
         defaultDatabaseUpgrade: defaultDatabaseUpgrade,
-        initializeDatabase    : initializeDatabase,
-        deleteDatabase        : deleteDatabase,
-        withDatabase          : withDatabase,
-
+        initializeDatabase: initializeDatabase,
+        deleteDatabase: deleteDatabase,
+        withDatabase: withDatabase,
         // Transaction
         monitorTransaction: monitorTransaction,
-
         // Store
         createStore: createStore,
-
         // Record
-        addRecord        : addRecord,
-        deleteRecord     : deleteRecord,
-        doRecordCount    : doRecordCount,
-        putRecord        : putRecord,
-        readRecordByKey  : readRecordByKey,
+        addRecord: addRecord,
+        deleteRecord: deleteRecord,
+        doRecordCount: doRecordCount,
+        putRecord: putRecord,
+        readRecordByKey: readRecordByKey,
         readRecordByIndex: readRecordByIndex,
-        withCursor       : withCursor
+        withCursor: withCursor
     };
 }());
 
