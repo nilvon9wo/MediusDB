@@ -10,4 +10,5 @@ gen
 .idea/
 MediusDB.iml
 /samples/USPostalCodes/scripts/data/zipcode.csv
+/nbproject/
 /nbproject/private/
