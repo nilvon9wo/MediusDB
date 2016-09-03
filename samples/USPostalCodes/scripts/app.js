@@ -1,7 +1,7 @@
 /* global Status, cities, MediusEvent, MediusDB, MediusHttp */
 
-var DATABASE = {NAME: 'postalCodes', VERSION: 64};
-var LOCATIONS = {STORENAME: 'locations', VERSION: 5};
+var DATABASE = {NAME: 'postalCodes', VERSION: 1};
+var LOCATIONS = {STORENAME: 'locations', VERSION: 1};
 
 function insertZipcodes(database) {
     'use strict';
