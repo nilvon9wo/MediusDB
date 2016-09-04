@@ -62,28 +62,28 @@ A:  I have an obtuse humour best understood by mute anatomy students.
   
 ## Troubleshooting
 
-1. Console.log reports "MediusEvent" or "MediusLog" is undefined.
+* Console.log reports "MediusEvent" or "MediusLog" is undefined.
 
 MediusDB depends upon MediusEvent which depends upon MediusLog.  
 
 I did not include these functions in one file because I wanted to separate concerns.
 
-2. Console.log reports "MediusDateTime", "MediusElement", or "MediusHttp" is undefined.
+* Console.log reports "MediusDateTime", "MediusElement", or "MediusHttp" is undefined.
 
 MediusDB does not depend upon these, but they are used in the sample applications.  
 
 You will find the code for these in the same sample project(s) from which you have been sponging code.
 
-3. Console.log reports "isArray" or "toArray" is not a function.
+* Console.log reports "isArray" or "toArray" is not a function.
 
 Call me naughty, but I've extended the Object prototype.  MediusDB does not depend this, 
 but it is used in the sample applications.  In any sample, see the "/lib/ObjectExtensions.js".
 
-4. My code does not work but no errors are displayed.
+* My code does not work but no errors are displayed.
 
 If the config object you pass into "withStores" contains an "events" property, try changing this to "transactionEvents".
 
-5. Console.log complains about the transaction.
+* Console.log complains about the transaction.
 
 @!#?@! Transactions... @?*! ... They are the #1 reason I have created MediusDB.  
 
