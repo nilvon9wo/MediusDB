@@ -15,7 +15,7 @@ Being neurotic, I was determined to make his application work.
 
 Because indexedDB is unstable, not especially well documented, and truly inspires foul language,
 it took over two weeks (admittedly, with interruptions) to create an solution which works on reliably on
-Mozilla Firefox Developer Edition 50.0a2 and never works on Google Chrome 49.0.2623.112 m (other browsers are yet untested).
+Mozilla *Firefox* Developer Edition 50.0a2 and on Google *Chrome* 49.0.2623.112 m (other browsers are yet untested).
  
  I wouldn't have even accomplished this much without  Raymond Camden's excellent blog
  "Working With IndexedDb" ( http://code.tutsplus.com/tutorials/working-with-indexeddb--net-34673 ).
