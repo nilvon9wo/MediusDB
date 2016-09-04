@@ -140,9 +140,13 @@ var MediusDB = (function () {
 
         if (!transaction) {
             var transactionType = config.isWritable ? 'readwrite' : 'readonly';
-            transaction = config.database.transaction([config.store], transactionType);
+            transaction = config.database && config.database.transaction([config.store], transactionType);
         }
 
+        if (!transaction) {
+            throw new Error ('No transaction available.');
+        }
+        
         if (config.transactionCallback) {
             config.transactionCallback(transaction);
         }
