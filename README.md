@@ -14,11 +14,13 @@ Mr. Flanagan, he warns his readers that it probably wouldn't.
 Being neurotic, I was determined to make his application work.
 
 Because indexedDB is unstable, not especially well documented, and truly inspires foul language,
-it took over two weeks (admittedly, with interruptions) to create an solution which works on reliably on
+it took over two weeks (admittedly, with interruptions) to create a solution which works on reliably on
 Mozilla *Firefox* Developer Edition 50.0a2 and on Google *Chrome* 49.0.2623.112 m (other browsers are yet untested).
+You can find my solution as "USPostalCodes" sample.
  
  I wouldn't have even accomplished this much without  Raymond Camden's excellent blog
  "Working With IndexedDb" ( http://code.tutsplus.com/tutorials/working-with-indexeddb--net-34673 ).
+ His tutorials inspired the "NotesDatabase" and "PeopleDatabase" samples.
  
  MediusDB is intended to simplify the use of indexedDB by creating a simple API for common use cases.
  
@@ -29,16 +31,12 @@ Mozilla *Firefox* Developer Edition 50.0a2 and on Google *Chrome* 49.0.2623.112 
 
 ## Dependencies
  
- MediusDB presently depends upon:
-  
-  1. A zipcode.csv file:  Boutell.com offers a suitable file at https://boutell.com/zipcodes/
-  1. Two additional scripts.
+ MediusDB presently depends upon two additional scripts.
   ** MediusEvent.js
   ** MediusLog.js
   
   I've chosen to keep separate  as I want to keep MediusDB.js focused on indexedDB. 
-  You'll find these scripts within the "US Postal Codes" sample project /scripts/lib folder.
-  
+
   (After MediusDB is debugged, I may later rethink this so MediusDB can stand alone.)
   
  
@@ -46,12 +44,15 @@ Mozilla *Firefox* Developer Edition 50.0a2 and on Google *Chrome* 49.0.2623.112 
  
 In the sample directory, you'll find three sample projects demonstrating how MediusDB can be used:
  
- 1. "US Postal Codes"
- 2. "People Database"
- 3. "Note Database"
+ 1. US Postal Codes (inspired by David Flanagan's JavaScript: The Definitive Guide, 6th Edition)
+ 2. People Database (inspired by Raymond Camden's "Working With IndexedDb")
+ 3. Note Database (inspired by Raymond Camden's "Working With IndexedDb")
  
- (Others may be added later.)
+(Others may be added later.)
 
+The "US Postal Codes" project requires a zipcode.csv file in the data director.  Boutell.com offers a suitable file at https://boutell.com/zipcodes/
+
+In all three sample projects, I've heavily refactored the original code samples, but traces may remain as I wasn't deliberately trying to obliterate their code.  If these samples work, allow me to share the credit with those authors.  However, if it doesn't work, let blame your browser(s).
 
 ## Anticipated Questions
 
