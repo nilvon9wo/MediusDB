@@ -85,7 +85,7 @@ function displayNotes(database) {
         }
 
         MediusDB.withCursor({
-        database: database,
+            database: database,
             transaction: transaction,
             store: DATABASE_STORE,
             range: range,
@@ -239,33 +239,38 @@ function addRowClickEvents(database) {
                 .append($('<strong>Related Notes:</strong>'))
                 .append($('<br/>'));
 
-        var transaction = MediusDB.monitorTransaction({
+        var storeCallback = function (store, transaction) {
+            console.log('### storeCallback', store, transaction)
+            MediusDB.withCursor({
+                transaction: transaction,
+                database: database,
+                store: DATABASE_STORE,
+                range: {only: tag},
+                index: 'tags',
+                cursorCallback: function (cursor) {
+            console.log('### withCursor', cursor)
+                    var note = new Note(cursor.value);
+                    if (note.id !== parentNoteId) {
+                        doneOne = true;
+                        content.append(note.getLink(tagClickHandler))
+                                .append($('<br/>'));
+                    }
+                }
+            });
+        };
+
+        MediusDB.withStore({
             database: database,
             store: DATABASE_STORE,
-            events: {
+            transactionEvents: {
                 complete: function () {
                     if (!doneOne) {
                         content.append($('<p>No other notes used this tag.</p>'));
                     }
                     $('#relatedNotesDisplay').html(content);
                 }
-            }
+            },
+            storeCallback: storeCallback
         });
-
-        MediusDB.withCursor({
-            transaction: transaction,
-            store: DATABASE_STORE,
-            range: {only: tag},
-            index: 'tags',
-            cursorCallback: function (cursor) {
-                var note = new Note(cursor.value);
-                if (note.id !== parentNoteId) {
-                    doneOne = true;
-                    content.append(note.getLink(tagClickHandler))
-                            .append($('<br/>'));
-                }
-            }
-        });
-
     }
 }
