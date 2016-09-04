@@ -1,11 +1,17 @@
 # MediusDB
-MediusDB is a wrapper for JavaScript indexedDB.
-
 by Brian Kessler, 2016 September 2
+
+## Introduction
+
+MediusDB is a wrapper for JavaScript indexedDB.
+MediusDB is intended to simplify the use of indexedDB by creating a simple API for common use cases.
+ 
+I hope by sharing MediusDB, I'll save others from aggravation.
+Furthermore, I'd like to receive feedback to improve both MediusDB and myself.
 
 For use, see the samples.
 
-## Introduction
+## Acknowledgements and Raison D'être
 
 JavaScript: The Definitive Guide, 6th Edition by David Flanagan 
 ( http://shop.oreilly.com/product/9780596805531.do ) 
@@ -18,35 +24,28 @@ it took over two weeks (admittedly, with interruptions) to create a solution whi
 Mozilla *Firefox* Developer Edition 50.0a2 and on Google *Chrome* 49.0.2623.112 m (other browsers are yet untested).
 You can find my solution as "USPostalCodes" sample.
  
- I wouldn't have even accomplished this much without  Raymond Camden's excellent blog
- "Working With IndexedDb" ( http://code.tutsplus.com/tutorials/working-with-indexeddb--net-34673 ).
- His tutorials inspired the "NotesDatabase" and "PeopleDatabase" samples.
+I wouldn't have even accomplished this much without  Raymond Camden's excellent blog
+"Working With IndexedDb" ( http://code.tutsplus.com/tutorials/working-with-indexeddb--net-34673 ).
+His tutorials inspired the "NotesDatabase" and "PeopleDatabase" samples.
  
- MediusDB is intended to simplify the use of indexedDB by creating a simple API for common use cases.
- 
- I hope by sharing MediusDB, I'll save others from similar aggravation.
- 
- Also, I hope to receive feedback towards MediusDB's improvement, both for the sake of improving it
- and for the sake of learning.
-
 ## Dependencies
  
- MediusDB presently depends upon two additional scripts.
-  ** MediusEvent.js
-  ** MediusLog.js
+MediusDB presently depends upon two additional scripts.
+** MediusEvent.js
+** MediusLog.js
   
-  I've chosen to keep separate  as I want to keep MediusDB.js focused on indexedDB. 
+I've chosen to keep separate  as I want to keep MediusDB.js focused on indexedDB. 
 
-  (After MediusDB is debugged, I may later rethink this so MediusDB can stand alone.)
+(After MediusDB is debugged, I may later rethink this so MediusDB can stand alone.)
   
  
 ## Samples
  
 In the sample directory, you'll find three sample projects demonstrating how MediusDB can be used:
  
- 1. US Postal Codes (inspired by David Flanagan's JavaScript: The Definitive Guide, 6th Edition)
- 2. People Database (inspired by Raymond Camden's "Working With IndexedDb")
- 3. Note Database (inspired by Raymond Camden's "Working With IndexedDb")
+1. US Postal Codes (inspired by David Flanagan's JavaScript: The Definitive Guide, 6th Edition)
+2. People Database (inspired by Raymond Camden's "Working With IndexedDb")
+3. Note Database (inspired by Raymond Camden's "Working With IndexedDb")
  
 (Others may be added later.)
 
@@ -89,5 +88,5 @@ Instead include the database and store so MediusDB can create a new transaction 
 
 ## Contributions are welcome.
  
- Please feel free to file issues, create your own branches, and open pull requests.
+Please feel free to file issues, create your own branches, and open pull requests.
  
