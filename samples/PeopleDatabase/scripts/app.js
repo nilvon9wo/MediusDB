@@ -12,9 +12,6 @@ function withPeopleDatabase(onSuccess) {
         },
         events: {
             upgradeneeded: MediusDB.defaultDatabaseUpgrade({
-                META_VERSION_CONTROL: {
-                    keyDefinition: {keyPath: 'storeName', autoIncrement: true}
-                },
                 people: {
                     keyDefinition: {autoIncrement: true},
                     indexes: [

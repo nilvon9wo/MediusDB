@@ -14,9 +14,6 @@ function withNoteDatabase(onSuccess) {
         },
         events: {
             upgradeneeded: MediusDB.defaultDatabaseUpgrade({
-                META_VERSION_CONTROL: {
-                    keyDefinition: {keyPath: 'storeName', autoIncrement: true}
-                },
                 note: {
                     keyDefinition: {keyPath: 'id', autoIncrement: true},
                     indexes: [
