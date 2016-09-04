@@ -80,10 +80,10 @@ but it is used in the sample applications.  In any sample, see the "/lib/ObjectE
 5. Console.log complains about the transaction.
 * @!#?@! Transactions... @?*! ... They are the #1 reason I have created MediusDB.  
 They are terrible and I would love to hide them from you.
-** Different browsers handle these differently and they can (will) die if they go out of scope.
-** If you have a transaction, try to avoid calling any methods without passing in the transaction 
+* Different browsers handle these differently and they can (will) die if they go out of scope.
+* If you have a transaction, try to avoid calling any methods without passing in the transaction 
 -- even if you think you won't need it and your linter complains it is an unused variable.
-** Also, whenever possible, have a plan B.  That is to say, within your MediusDB method config objects,
+* Also, whenever possible, have a plan B.  That is to say, within your MediusDB method config objects,
 try never to rely on any particular transaction remaining alive.  
 Instead include the database and store so MediusDB can create a new transaction if/as/when necessary.  (Also, include isWritable: true, when appropriate.)
 
