@@ -101,7 +101,7 @@ function displayNotes(database) {
     MediusDB.withStore({
         database: database,
         store: DATABASE_STORE,
-        events: {
+        transactionEvents: {
             complete: function () {
                 addRowClickEvents(database);
                 $('#noteTable').show();

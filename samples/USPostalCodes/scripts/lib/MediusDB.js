@@ -254,8 +254,8 @@ var MediusDB = (function () {
 
     function deleteRecord(config) {
         'use strict';
-        if (!config || !config.database || !config.store || !config.record || !config.upsertMethod) {
-            throw new Error('upsertRecord is missing required properties');
+        if (!config || !config.database || !config.store || !config.key) {
+            throw new Error('deleteRecord is missing required properties');
         }
 
         config.isWritable = true;
