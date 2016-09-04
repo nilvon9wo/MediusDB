@@ -1,0 +1,21 @@
+.tag, .tags {
+    display: inline;
+    list-style: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 0;
+}
+
+#noteMain {
+    padding-top: 100px;
+}
+#noteTable {
+    display: none;
+}
+
+#noteForm {
+    display: none;
+}
+#filterField {
+    color: black;
+}
