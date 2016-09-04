@@ -177,7 +177,7 @@ var MediusDB = (function () {
     function withStore(config) {
         'use strict';
         if (!config || !(config.database || config.transaction)) {
-            throw new Error('getTransactionStore is missing required properties');
+            throw new Error('withStore is missing required properties');
         }
 
         config.transactionCallback = function (transaction) {
@@ -188,15 +188,6 @@ var MediusDB = (function () {
 
         withTransaction(config);
     }
-
-    function monitorStore(config) {
-        'use strict';
-        config.storeCallback = function (store, transaction) {
-            addEvents(transaction, config);
-        };
-        withStore(config);
-    }
-
 
     // Ranges ---------------------------------------------------------------------------
 
@@ -377,7 +368,6 @@ var MediusDB = (function () {
         withDatabase: withDatabase,
         // Store
         createStore: createStore,
-        monitorStore: monitorStore,
         withStore: withStore,
         // Record
         addRecord: addRecord,
